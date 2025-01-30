@@ -94,7 +94,8 @@ public class componentset {
 	private window w;
 	
 	public componentset(window w) {
-		
+		comboBox.setSize(new Dimension(400, 50));
+
 		this.w=w;
 		tabCloseClassEvent = new TabCloseClass(this);
 
@@ -163,9 +164,10 @@ public class componentset {
 		
 		tp.addTab(file, temp);
 
+		
 		textArea[areaindex]=temp;
 
-		tab.add( new Fileinfo(dir+"/"+file,file));
+		tab.add(new Fileinfo(dir+"/"+file,file,temp));
 		tp.setSelectedIndex(tp.getTabCount()-1);
 		
 		tp.setTabComponentAt(getselectedindex(),getTabInfoPanel(tab.get(getselectedindex()).getLabelName(),getselectedindex())) ;

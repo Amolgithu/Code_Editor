@@ -1,5 +1,8 @@
 package com.window;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +11,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
@@ -44,11 +49,19 @@ public class Menulickevents implements ActionListener {
         
         else if (m == components.changeStyle) {
 			JDialog dialog = new JDialog(ww,"Font Style");
+            dialog.setLayout(new FlowLayout());
 			dialog.setSize(500,500);
-			
-			
-			
-			dialog.setVisible(true);
+            JButton applyButton = new JButton("Apply");
+            applyButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    components.tab.get(components.tp.getSelectedIndex()).area.setFont(new Font(components.comboBox.getSelectedItem().toString(), Font.PLAIN, 20));
+                }
+            });
+            
+            dialog.add(components.comboBox);
+			dialog.add(applyButton);
+            dialog.setVisible(true);
 		}
     }
 
