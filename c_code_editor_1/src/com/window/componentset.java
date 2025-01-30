@@ -2,18 +2,11 @@ package com.window;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.nio.channels.NonReadableChannelException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -32,7 +25,6 @@ public class componentset {
 	//file Menu items.
 	public JMenuItem New,open,save,save_as,exit;
 	
-	public ;
 	//edit menu items.
 	public JMenuItem changeStyle;
 	

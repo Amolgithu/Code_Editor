@@ -10,7 +10,6 @@ import java.nio.file.Path;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.plaf.basic.BasicTreeUI.TreeCancelEditingAction;
 
 public class Menulickevents implements ActionListener {
 
@@ -36,11 +35,9 @@ public class Menulickevents implements ActionListener {
             System.out.println("in open");
             readfile();
         } else if (m == components.save) {
-//        	System.out.println("save triggered");
             savefile();
         }
         else if (m == components.save_as) {
-//        	System.out.println("save triggered");
             saveAs();
         }
         
@@ -61,7 +58,6 @@ public class Menulickevents implements ActionListener {
     	
     	String selected_fname = components.tp.getTitleAt(selectedIndex);
     	
-//    	System.out.println(selected_fname);
     	if(selected_fname.equals("Untitled.txt")) {
     		saveAs();
     	}
@@ -103,6 +99,7 @@ public class Menulickevents implements ActionListener {
 				e.printStackTrace();
 			}
     		
+            components.tab.get(components.tp.getSelectedIndex()).fileName.setText(file.getName());
     	}
     	
     }
