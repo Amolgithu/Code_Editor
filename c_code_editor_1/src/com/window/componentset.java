@@ -82,12 +82,12 @@ public class componentset {
 			"Yu Gothic","Yu Gothic Light","Yu Gothic Medium","Yu Gothic UI","Yu Gothic UI Light",
 			"Yu Gothic UI Semibold","Yu Gothic UI Semilight"	
 	};
-	
+	Integer fontsizes[] = {8,9,10,11,12,14,16,18,20,22,24,26,28,30,32,34,36};
 	public JComboBox<String> comboBox = new JComboBox<String>(fontNameString);
+	public JComboBox<Integer> FontSizecombobox = new JComboBox<Integer>(fontsizes);
 	
 	public Menulickevents mce;
 	public JFileChooser fileChooser = new JFileChooser();
-	public JTextArea textArea[] = new JTextArea[100];
 	public JTabbedPane tp;
 	private TabCloseClass tabCloseClassEvent;
 	public List<Fileinfo> tab = new ArrayList<Fileinfo>();
@@ -163,9 +163,6 @@ public class componentset {
 		temp.enableInputMethods(true);
 		
 		tp.addTab(file, temp);
-
-		
-		textArea[areaindex]=temp;
 
 		tab.add(new Fileinfo(dir+"/"+file,file,temp));
 		tp.setSelectedIndex(tp.getTabCount()-1);

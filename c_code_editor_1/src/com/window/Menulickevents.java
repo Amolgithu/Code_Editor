@@ -55,10 +55,11 @@ public class Menulickevents implements ActionListener {
             applyButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    components.tab.get(components.tp.getSelectedIndex()).area.setFont(new Font(components.comboBox.getSelectedItem().toString(), Font.PLAIN, 20));
+                    components.tab.get(components.tp.getSelectedIndex()).area.setFont(new Font(components.comboBox.getSelectedItem().toString(), Font.PLAIN, (int)components.FontSizecombobox.getSelectedItem()));
                 }
             });
             
+            dialog.add(components.FontSizecombobox);
             dialog.add(components.comboBox);
 			dialog.add(applyButton);
             dialog.setVisible(true);
@@ -82,7 +83,7 @@ public class Menulickevents implements ActionListener {
     }
     private void writecontenttofile(File f) {
     	
-    	String contentString = components.textArea[components.tp.getSelectedIndex()].getText();
+    	String contentString = components.tab.get(components.tp.getSelectedIndex()).area.getText();
 
 		
 		try {
@@ -152,7 +153,7 @@ public class Menulickevents implements ActionListener {
         }
 
         File f = new File(source);
-        components.textArea[components.tp.getSelectedIndex()].append(contentString);
+        components.tab.get(components.tp.getSelectedIndex()).area.append(contentString);
         
     }
 
