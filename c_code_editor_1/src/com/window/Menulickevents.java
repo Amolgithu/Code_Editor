@@ -279,13 +279,18 @@ public class Menulickevents implements ActionListener {
         	
         	contentString = "";
         	
-        	try {
-        		components.addtab(filename, filedir);
-        		writeingcomtentfromfile(filedir+"/"+filename);
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        	}
+        	OpeningFileWithTab(filename,filedir);
+        	
         }
+    }
+    
+    public void OpeningFileWithTab(String filename,String filedir) {
+    	try {
+    		components.addtab(filename, filedir);
+    		writeingcomtentfromfile(filedir+"/"+filename);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
 
     public void writeingcomtentfromfile(String source) throws IOException {
@@ -304,6 +309,8 @@ public class Menulickevents implements ActionListener {
         Fileinfo fileinfo = components.tab.get(components.tp.getSelectedIndex());
 //        components.appendText(fileinfo.area,contentString);
         fileinfo.area.setText(contentString);
+        
+        contentString = "";
 //        SwingUtilities.invokeLater(() -> componentset.highlight(fileinfo.area));
         
     }

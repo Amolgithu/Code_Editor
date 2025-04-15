@@ -9,7 +9,11 @@ import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -30,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -38,6 +43,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 public class componentset {
 	public void appendText(JTextPane textPane, String text) {
@@ -55,6 +63,9 @@ public class componentset {
 	
 	//edit menu items.
 	public JMenuItem changeStyle,runitem;
+	
+    private HashMap<DefaultMutableTreeNode, File> nodeFileMap = new HashMap<>();
+    JTree fileTree;
 	
 	private static final String[] KEYWORDS = {
 	        "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
@@ -200,16 +211,79 @@ public class componentset {
 		suggestionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         suggestionPopup.setFocusable(false);
         suggestionPopup.add(new JScrollPane(suggestionList));
+        
+        
+        w.add(CreatingTree(),BorderLayout.WEST);
 
 		w.setJMenuBar(menuBar);
 		w.add(tp,BorderLayout.CENTER);
-		w.add(new JPanel(),BorderLayout.SOUTH);
-		w.add(new JPanel(),BorderLayout.NORTH);
-		w.add(new JPanel(),BorderLayout.EAST);
-		w.add(new JPanel(),BorderLayout.WEST);
+
+//		w.add(,BorderLayout.WEST);
 		
 	}
 
+	
+	private void chooseAndLoadDirectory() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setDialogTitle("Choose a folder");
+
+        int result = chooser.showOpenDialog(w);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedDir = chooser.getSelectedFile();
+            DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(selectedDir.getName());
+            nodeFileMap.clear();  // Clear previous data
+            nodeFileMap.put(rootNode, selectedDir);
+            buildTree(selectedDir, rootNode);
+            DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+            fileTree.setModel(treeModel);
+        }
+    }
+	
+	private JPanel CreatingTree() {
+		 JPanel mainPanel = new JPanel(new BorderLayout());
+
+        JButton openButton = new JButton("Select Folder");
+        openButton.addActionListener(e -> chooseAndLoadDirectory());
+
+        mainPanel.add(openButton, BorderLayout.NORTH);
+
+        fileTree= new JTree();
+        JScrollPane treeScroll = new JScrollPane(fileTree);
+        mainPanel.add(treeScroll, BorderLayout.CENTER);
+
+        // Add double-click listener
+        fileTree.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                int selRow = fileTree.getRowForLocation(e.getX(), e.getY());
+                TreePath selPath = fileTree.getPathForLocation(e.getX(), e.getY());
+                if (selRow != -1 && e.getClickCount() == 2) {
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+                    File selectedFile = nodeFileMap.get(selectedNode);
+                    if (selectedFile != null && selectedFile.isFile()) {
+                        mce.OpeningFileWithTab(selectedFile.getName(), selectedFile.getParent());
+                    }
+                }
+            }
+        });
+
+       return mainPanel;
+	}
+
+    private void buildTree(File dir, DefaultMutableTreeNode node) {
+        File[] files = dir.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode(file.getName());
+            node.add(child);
+            nodeFileMap.put(child, file);  // Save path reference
+            if (file.isDirectory()) {
+                buildTree(file, child);
+            }
+        }
+    }
+	
 	public void addtab(String file,String dir) {
 		file = file != null ? file : "Untitled.txt"; 
 		dir = dir != null ? dir : "C:/Users/Amol/Desktop"; 
@@ -217,8 +291,12 @@ public class componentset {
 
 		JTextPane temp = creaTextPane();
 		
+		JScrollPane scrollPane = new JScrollPane(temp);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		tp.addTab(file, temp);
+		
+		tp.addTab(file, scrollPane);
 
 		tab.add(new Fileinfo(dir+"/"+file,file,temp));
 		tp.setSelectedIndex(tp.getTabCount()-1);
@@ -340,7 +418,7 @@ public class componentset {
 	                        if (newIndex < 0) newIndex = suggestionModel.size() - 1;
 	                        suggestionList.setSelectedIndex(newIndex);
 	                        e.consume();
-	                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+	                    } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
 	                        e.consume();
 	                        insertSuggestion(temp);
 	                    } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
